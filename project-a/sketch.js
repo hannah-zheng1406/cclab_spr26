@@ -8,8 +8,11 @@ let xShadow = 0;
 let yShadow = 0;
 let xCreature = 0;
 let yCreature = 0;
-let ySpeed =1
-let xSnow, dia;
+let ySpeed = 1;
+let xStar = 0;
+let yStar = 0;
+let xTree;
+let yTree;
 
 function setup() {
   let canvas = createCanvas(800, 500);
@@ -39,13 +42,10 @@ function draw() {
     mouseY - 10
   );
 
-  
-    drawSnow()
-  
-  // general motion & follow the star
+  //follow mouse
   if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-    xShadow = lerp(xShadow, mouseX, 0.02);
-    yShadow = lerp(yShadow, mouseY, 0.02);
+    xShadow = lerp(xShadow, mouseX, 0.03);
+    yShadow = lerp(yShadow, mouseY, 0.03);
   } else {
     cosVal = cos(frameCount * 0.007);
     sinVal = sin(frameCount * 0.01);
@@ -54,38 +54,65 @@ function draw() {
   }
 
   // leap & balance star if creature catches star
-  sinVal = sin(frameCount * 0.05);
-  let yCreature = map(sinVal, -1, 1, yShadow - 200, yShadow - 100);
-  let size = map(sinVal, -1, 1, 0.65, 0.75);
-  let d = dist(mouseX, mouseY, xShadow, yShadow);
-  
-    if (d<=40) {
-    drawShadow(xShadow, yShadow, size);
-    drawCreature(xShadow, yCreature);
-  } else {
-    drawShadow(xShadow, yShadow);
-  }
-  
 
-  
-   // water ripples
+  push();
+  sinVal = sin(frameCount * 0.04);
+  let yStar = map(sinVal, -1, 1, yShadow - 280, yShadow);
+  let yCreature = map(sinVal, -1, 1, yShadow - 200, yShadow + 100);
+  let sizeShadow = map(sinVal, -1, 1, 0.75, 0.55);
+  let sizeCreature = map(sinVal, -1, 1, 1, 0.6);
+  let opacity = map(sinVal, -1, 0, 1000, 200);
+  let glow = map(sinVal, -1, 1, 50, 0);
+
+  d = dist(mouseX, mouseY, xShadow, yShadow);
+
+  if (d <= 20) {
+    drawShadow(xShadow, yShadow, sizeShadow);
+    drawStar(xShadow, yStar, glow);
+    drawCreature(xShadow, yCreature, sizeCreature, opacity, glow);
+  } else {
+    drawShadow(xShadow, yShadow, 0.65);
+  }
+
+  pop();
+
+  // water ripples
   if (mouseIsPressed) {
-    for (let dia = 20; dia < 40; dia = dia + 8) {
+    for (let dia = 20; dia < 40; dia = dia + 6) {
+      fill(116, 128, 145, 20);
       stroke(255);
-      fill(200, 211, 227, 90);
-      strokeWeight(1.5);
+      strokeWeight(0.5);
       ellipse(mouseX, mouseY, dia * 2.5, dia);
     }
   }
 
+  drawShore();
+
+  //close trees
+  drawTree(40,340);
+  drawTree(80,350);
+  drawTree(160,400);
+  drawTree (550,280,1.3)
+  drawTree(550,250,1.4);
+  
+  //bg trees
+  drawTree(-10,25,0.5)
+  drawTree(27,15,0.5)
+  drawTree(60,20,0.5)
+  drawTree(120,30,0.4)
+  
+
+  drawSnow();
+  
 }
 
-function drawShadow(xShadow, yShadow, size) {
+function drawShadow(xShadow, yShadow, sizeShadow) {
   push();
   translate(xShadow, yShadow);
-  scale(size);
+  scale(sizeShadow);
 
   stroke(255);
+  strokeWeight(1);
   noFill();
   ellipse(0, 5, 260, 110);
   noStroke();
@@ -109,18 +136,37 @@ function drawShadow(xShadow, yShadow, size) {
   pop();
 }
 
-function drawCreature(xCreature, yCreature) {
+function drawStar(xStar, yStar, glow) {
+  //star
+  push();
+  translate(xStar, yStar);
+  rotate(frameCount);
   noStroke();
-  fill(48, 61, 82);
+  fill(255);
+  triangle(0, -20, -18.3, 10, 18.3, 10);
+  triangle(0, 20, -18.3, -10, 18.3, -10);
+
+  fill(255, glow);
+  triangle(0, -30, -28.3, 20, 23.3, 20);
+  triangle(0, 30, -28.3, -20, 23.3, -20);
+  pop();
+}
+
+function drawCreature(xCreature, yCreature, sizeCreature, opacity, glow) {
+  noStroke();
+  fill(48, 61, 82, opacity);
 
   cosVal = cos(frameCount * 0.05);
 
-  let cX1 = map(sinVal, -1, 1, -3, 3);
-  let cX2 = map(cosVal, -1, 1, -3, 3);
+  let cX1 = map(sinVal * 1.5, -1, 1, -2, 2);
+  let cX2 = map(cosVal * 1.5, -1, 1, -2, 2);
 
   //body & fins
   push();
   translate(xCreature, yCreature);
+
+  scale(sizeCreature);
+
   circle(0, 0, 45);
   circle(0, -30, 20);
   circle(cX2, -50, 10);
@@ -132,39 +178,39 @@ function drawCreature(xCreature, yCreature) {
   triangle(20, -5, 40, 10, 20, 10); // fin2
 
   //halos
-  stroke(255);
+  stroke(255, opacity);
   noFill();
   ellipse(0, 0, 120, 30);
   ellipse(0, -60, 30, 5);
   ellipse(0, -15, 50, 10);
   ellipse(0, -30, 65, 10);
 
-  // balancing star
-  push ()
-  translate (0, -80)
-  rotate (frameCount)
-  noStroke();
-  fill(255);
-  triangle(0,-20,-18.3,10, 18.3,10)
-  triangle(0,20,-18.3,-10,18.3,-10)
-  pop()
-  
+  //glow
+  stroke(255, glow);
+  strokeWeight(10);
+  ellipse(0, 0, 120, 30);
+  ellipse(0, -60, 30, 5);
+  ellipse(0, -15, 50, 10);
+  ellipse(0, -30, 65, 10);
+
+  strokeWeight(1);
+
   //tail
   sinVal = sin(frameCount * 0.1);
-  let tailRot = map(sinVal, -1, 1, -0.5, 0.5);
+  let tailRot = map(sinVal, -1, 1, -1, 1);
 
   push();
   translate(5, 85);
   rotate(tailRot);
-  fill(48, 61, 82);
+  fill(48, 61, 82, opacity);
   noStroke();
   triangle(0, 0, -10, 25, 10, 25);
   pop();
-  
-  // 
 }
 
 function drawSnow() {
+  background(216, 224, 237, 20);
+
   let p = 4;
 
   let noiseVal = noise(frameCount);
@@ -177,4 +223,42 @@ function drawSnow() {
       circle(xSnow + offset, ySnow + offset + ySpeed, p);
     }
   }
+}
+
+function drawShore() {
+  fill(255);
+  triangle(0, 425, 0, 500, 230, 500);
+  triangle(600, 500, 800, 500, 800, 460);
+  beginShape();
+  vertex(0, 20);
+  vertex(0, 100);
+  vertex(122, 82);
+  vertex(88, 31);
+  endShape(CLOSE);
+
+  fill(188, 193, 196);
+  beginShape();
+  vertex(0, 84);
+  vertex(117, 75);
+  vertex(122, 82);
+  vertex(0, 100);
+  endShape(CLOSE);
+}
+
+function drawTree(xTree,yTree,sizeTree) {
+  noStroke();
+  
+  //green
+  push()
+  scale(sizeTree)
+  translate(xTree,yTree)
+  fill(78, 87, 77);
+  triangle(0, 0, -20, 40, 20, 40);
+  triangle(0, 20, -25, 60, 25, 60);
+  triangle(0,40,-25,80,25,80)
+  
+  //brown
+  fill(77, 67, 57)
+  rect(-5,80,10,30)
+  pop()
 }
