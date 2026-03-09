@@ -42,11 +42,11 @@ body {
 }
 
 .green {
-    color: LightSeaGreen;
+    color: rgb(141, 192, 233);
 }
 
 .yellow {
-    color: GoldenRod;
+    color: rgb(60, 55, 47);
 }
 
 .two-columns {
