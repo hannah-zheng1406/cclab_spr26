@@ -33,8 +33,8 @@ body {
     margin: auto;
 }
 
-.black {
-    color: black;
+.navy {
+    color: rgb(57, 77, 110);
 }
 
 .red {
@@ -45,8 +45,8 @@ body {
     color: LightSeaGreen;
 }
 
-.yellow {
-    color: GoldenRod;
+.brown {
+    color: rgb(77, 67, 57);
 }
 
 .two-columns {
