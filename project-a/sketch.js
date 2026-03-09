@@ -223,18 +223,14 @@ function drawCreature(xCreature, yCreature, sizeCreature, opacity, glow) {
 }
 
 function drawSnow() {
-  background(216, 224, 237, 20);
-
-  let p = 4;
-
+  let dia = 4;
   let noiseVal = noise(frameCount);
   offset = map(noiseVal, 0, 1, -150, 150);
 
-  noStroke();
   fill(255);
   for (let xSnow = 0; xSnow <= width; xSnow = xSnow + 50) {
     for (let ySnow = 0; ySnow <= height; ySnow = ySnow + 60) {
-      circle(xSnow + offset, ySnow + offset + speedSnow, p);
+      circle(xSnow + offset, ySnow + offset + speedSnow, dia);
     }
   }
 }
