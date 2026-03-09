@@ -1,109 +1,123 @@
-/*
-Template for IMA's Creative Coding Lab 
-
-Project A: Generative Creatures
-CCLaboratories Biodiversity Atlas 
-*/
 let xShadow = 0;
 let yShadow = 0;
-let xCreature = 0;
-let yCreature = 0;
-let ySpeed = 1;
-let xStar = 0;
-let yStar = 0;
-let xTree;
-let yTree;
+let xCreature, yCreature, xStar, yStar;
+let speedSnow = 1;
+let xTree, yTree;
+speedShadow = 2;
 
 function setup() {
   let canvas = createCanvas(800, 500);
   canvas.parent ("p5-canvas-container")
 }
-
 function draw() {
   background(216, 224, 237);
 
-  //star
-  noStroke();
-  fill(255);
-  triangle(
-    mouseX,
-    mouseY - 20,
-    mouseX - 18.3,
-    mouseY + 10,
-    mouseX + 18.3,
-    mouseY + 10
-  );
-  triangle(
-    mouseX,
-    mouseY + 20,
-    mouseX - 18.3,
-    mouseY - 10,
-    mouseX + 18.3,
-    mouseY - 10
-  );
-
   //follow mouse
   if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-    xShadow = lerp(xShadow, mouseX, 0.03);
-    yShadow = lerp(yShadow, mouseY, 0.03);
+    if (mouseIsPressed) {
+      noStroke();
+      fill(255);
+      triangle(
+        mouseX,
+        mouseY - 20,
+        mouseX - 18.3,
+        mouseY + 10,
+        mouseX + 18.3,
+        mouseY + 10
+      );
+      triangle(
+        mouseX,
+        mouseY + 20,
+        mouseX - 18.3,
+        mouseY - 10,
+        mouseX + 18.3,
+        mouseY - 10
+      );
+
+      sinVal = sin(frameCount * 0.04);
+      yStar = map(sinVal, -1, 1, yShadow - 280, yShadow);
+      yCreature = map(sinVal, -1, 1, yShadow - 200, yShadow + 100);
+      let sizeShadow = map(sinVal, -1, 1, 0.75, 0.55);
+      let sizeCreature = map(sinVal, -1, 1, 1, 0.6);
+      let opacity = map(sinVal, -1, 0, 1000, 200);
+      let glow = map(sinVal, -1, 1, 50, 0);
+
+      drawShadow(xShadow, yShadow, 0.65);
+
+      xShadow = lerp(xShadow, mouseX, 0.04);
+      yShadow = lerp(yShadow, mouseY, 0.04);
+
+      push();
+      dLeap = dist(mouseX, mouseY, xShadow, yShadow);
+
+      if (dLeap <= 20) {
+        drawShadow(xShadow, yShadow, sizeShadow);
+        drawStar(xShadow, yStar, glow);
+        drawCreature(xShadow, yCreature, sizeCreature, opacity, glow);
+        pop();
+      }
+    } else {
+      let shadowNoise = noise(frameCount * 0.01);
+      yNoise = map(shadowNoise, 0, 1, -2, 2);
+
+      xShadow = xShadow + speedShadow;
+      yShadow = yShadow + yNoise;
+
+      drawShadow(xShadow, yShadow, 0.65);
+
+      if (xShadow >= width - 100 || xShadow <= 100) {
+        speedShadow = -speedShadow;
+      }
+      if (yShadow > height) {
+        yShadow = height;
+      }
+      if (yShadow < 0) {
+        yShadow = 0;
+      }
+
+      dEscape = dist(mouseX, mouseY, xShadow, yShadow);
+
+      if (dEscape < 60) {
+        if (xShadow < width / 2) xShadow = xShadow - 3 * speedShadow;
+        if (xShadow >= width / 2) {
+          xShadow = xShadow + 3 * speedShadow;
+        }
+        if (yShadow < height / 2) {
+          yShadow = yShadow - 3 * speedShadow;
+        }
+        if (yShadow > height / 2) {
+          yShadow = yShadow + 3 * speedShadow;
+        }
+      }
+    }
   } else {
     cosVal = cos(frameCount * 0.007);
     sinVal = sin(frameCount * 0.01);
-    xShadow = map(cosVal, -1, 1, 100, 700);
-    yShadow = map(sinVal, -1, 1, 100, 400);
-  }
+    ogX = map(cosVal, -1, 1, 100, 700);
+    ogY = map(sinVal, -1, 1, 100, 400);
 
-  // leap & balance star if creature catches star
+    xShadow = lerp(xShadow, ogX, 0.01);
+    yShadow = lerp(yShadow, ogY, 0.01);
 
-  push();
-  sinVal = sin(frameCount * 0.04);
-  let yStar = map(sinVal, -1, 1, yShadow - 280, yShadow);
-  let yCreature = map(sinVal, -1, 1, yShadow - 200, yShadow + 100);
-  let sizeShadow = map(sinVal, -1, 1, 0.75, 0.55);
-  let sizeCreature = map(sinVal, -1, 1, 1, 0.6);
-  let opacity = map(sinVal, -1, 0, 1000, 200);
-  let glow = map(sinVal, -1, 1, 50, 0);
-
-  d = dist(mouseX, mouseY, xShadow, yShadow);
-
-  if (d <= 20) {
-    drawShadow(xShadow, yShadow, sizeShadow);
-    drawStar(xShadow, yStar, glow);
-    drawCreature(xShadow, yCreature, sizeCreature, opacity, glow);
-  } else {
     drawShadow(xShadow, yShadow, 0.65);
-  }
-
-  pop();
-
-  // water ripples
-  if (mouseIsPressed) {
-    for (let dia = 20; dia < 40; dia = dia + 6) {
-      fill(116, 128, 145, 20);
-      stroke(255);
-      strokeWeight(0.5);
-      ellipse(mouseX, mouseY, dia * 2.5, dia);
-    }
   }
 
   drawShore();
 
-  //close trees
-  drawTree(40,340);
-  drawTree(80,350);
-  drawTree(160,400);
-  drawTree (550,280,1.3)
-  drawTree(550,250,1.4);
-  
   //bg trees
-  drawTree(-10,25,0.5)
-  drawTree(27,15,0.5)
-  drawTree(60,20,0.5)
-  drawTree(120,30,0.4)
-  
+  drawTree(-10, 25, 0.5);
+  drawTree(27, 15, 0.5);
+  drawTree(60, 20, 0.5);
+  drawTree(120, 30, 0.4);
+
+  //close trees
+  drawTree(40, 340);
+  drawTree(80, 350);
+  drawTree(160, 400);
+  drawTree(550, 280, 1.3);
+  drawTree(550, 250, 1.4);
 
   drawSnow();
-  
 }
 
 function drawShadow(xShadow, yShadow, sizeShadow) {
@@ -158,8 +172,8 @@ function drawCreature(xCreature, yCreature, sizeCreature, opacity, glow) {
 
   cosVal = cos(frameCount * 0.05);
 
-  let cX1 = map(sinVal * 1.5, -1, 1, -2, 2);
-  let cX2 = map(cosVal * 1.5, -1, 1, -2, 2);
+  cX1 = map(sinVal * 1.5, -1, 1, -2, 2);
+  cX2 = map(cosVal * 1.5, -1, 1, -2, 2);
 
   //body & fins
   push();
@@ -197,7 +211,7 @@ function drawCreature(xCreature, yCreature, sizeCreature, opacity, glow) {
 
   //tail
   sinVal = sin(frameCount * 0.1);
-  let tailRot = map(sinVal, -1, 1, -1, 1);
+  tailRot = map(sinVal, -1, 1, -1, 1);
 
   push();
   translate(5, 85);
@@ -220,7 +234,7 @@ function drawSnow() {
   fill(255);
   for (let xSnow = 0; xSnow <= width; xSnow = xSnow + 50) {
     for (let ySnow = 0; ySnow <= height; ySnow = ySnow + 60) {
-      circle(xSnow + offset, ySnow + offset + ySpeed, p);
+      circle(xSnow + offset, ySnow + offset + speedSnow, p);
     }
   }
 }
@@ -245,20 +259,20 @@ function drawShore() {
   endShape(CLOSE);
 }
 
-function drawTree(xTree,yTree,sizeTree) {
+function drawTree(xTree, yTree, sizeTree) {
   noStroke();
-  
+
   //green
-  push()
-  scale(sizeTree)
-  translate(xTree,yTree)
+  push();
+  scale(sizeTree);
+  translate(xTree, yTree);
   fill(78, 87, 77);
   triangle(0, 0, -20, 40, 20, 40);
   triangle(0, 20, -25, 60, 25, 60);
-  triangle(0,40,-25,80,25,80)
-  
+  triangle(0, 40, -25, 80, 25, 80);
+
   //brown
-  fill(77, 67, 57)
-  rect(-5,80,10,30)
-  pop()
+  fill(77, 67, 57);
+  rect(-5, 80, 10, 30);
+  pop();
 }
