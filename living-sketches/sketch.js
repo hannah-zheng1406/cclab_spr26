@@ -31,69 +31,6 @@ function draw() {
   }
 }
 
-  // // examples: eye
-
-  // image(
-  //   eyes[curEye],
-  //   mouseX,
-  //   mouseY,
-  //   eyes[0].width * 0.25,
-  //   eyes[0].height * 0.25
-  // );
-
-  // curEye = floor((frameCount / 20) % eyes.length);
-
-  // // rocket
-
-  // push();
-  // translate(width / 2, rocketY);
-  // rotate(radians(-90));
-  // imageMode(CENTER);
-  // image(
-  //   rockets[curRocket],
-  //   0,
-  //   0,
-  //   rockets[0].width * 0.25,
-  //   rockets[0].height * 0.25
-  // );
-  // pop();
-
-  // // rocket animation only has 4 frames
-  // curRocket = floor((frameCount / 10) % 4);
-
-  // rocketY += rocketSpeedY;
-  // rocketSpeedY += -0.1;
-  // if (rocketY < -100) {
-  //   rocketY = 500;
-  //   rocketSpeedY = 0;
-  // }
-
-  // // doodles, using sin()
-
-  // image(
-  //   doodles1[curDoodle1],
-  //   0,
-  //   0,
-  //   doodles1[0].width * 0.5,
-  //   doodles1[0].height * 0.5
-  // );
-
-  // curDoodle1 = floor(map(sin(frameCount / 10), -1, 1, 0, doodles1.length));
-
-  // image(
-  //   doodles2[curDoodle2],
-  //   400,
-  //   300,
-  //   doodles2[0].width * 0.5,
-  //   doodles2[0].height * 0.5
-  // );
-
-  // let d = dist(mouseX, mouseY, 485, 355);
-  // if (d < 100) {
-  //   curDoodle2 = floor(map(sin(frameCount / 10), -1, 1, 0, doodles2.length));
-  // }
-
-
 // You shouldn't need to modify these helper functions:
 
 function crop(imgs, x, y, w, h) {
