@@ -1,30 +1,15 @@
-/*
-  Check our the GOAL and the RULES of this exercise at the bottom of this file.
-  
-  After that, follow these steps before you start coding:
-
-  1. rename the dancer class to reflect your name (line 35).
-  2. adjust line 20 to reflect your dancer's name, too.
-  3. run the code and see if a square (your dancer) appears on the canvas.
-  4. start coding your dancer inside the class that has been prepared for you.
-  5. have fun.
-*/
 
 let dancer;
 
 function setup() {
-  // no adjustments in the setup function needed...
   let canvas = createCanvas(windowWidth, windowHeight);
   canvas.parent("p5-canvas-container");
-
-  // ...except to adjust the dancer's name on the next line:
   dancer = new Cat (width / 2, height / 2);
 }
 
 function draw() {
-  // you don't need to make any adjustments inside the draw loop
   background(0);
-  drawFloor(); // for reference only
+  drawFloor(); 
 
   dancer.display();
 }
@@ -34,8 +19,6 @@ class Cat {
     this.x = startX;
     this.y = startY;
   
-  }
-  update() {
   }
 
   display() {
