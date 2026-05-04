@@ -140,14 +140,14 @@ class Cursor {
     this.i = "|";
     this.x = 325;
     this.opacity = 0;
-    this.textObj = textoop;
+    this.textoop = textoop;
     this.question = question;
   }
   update() {
     this.opacity = map(sin(frameCount * 0.1), -1, 1, 0, 255);
   }
   display() {
-    let currentText = "Do you still " + this.question[this.textObj.type];
+    let currentText = "Do you still " + this.question[this.textoop.type];
     this.x = 245 + textWidth(currentText);
     fill(0, this.opacity);
     textSize(18);
@@ -251,6 +251,26 @@ function searchbar() {
   myText.display();
 }
 
+function stickyNote() {
+  background(255);
+  search.position(-1000, -100);
+  search2.position(-1000, -100);
+  inputName.position(-1000, -100);
+  inputDate.position(-1000, 100);
+  login.position(-1000, 100);
+  back2.position(-1000, 1000);
+
+  let currentFrame = floor(stickyNoteFrame / 10);
+  image(frame[currentFrame], 0, 0, 800, 500);
+
+  if (stickyNoteFrame < 49 * 10) {
+    stickyNoteFrame++;
+    back.position(-1000, 1000);
+  } else {
+    back.position(360, 460);
+  }
+}
+
 function searchbar2() {
   search2.position(370, 270);
   search.position(-1000, -100);
@@ -276,26 +296,6 @@ function searchbar2() {
   myCursor2.update();
   myCursor2.display();
   myText2.display();
-}
-
-function stickyNote() {
-  background(255);
-  search.position(-1000, -100);
-  search2.position(-1000, -100);
-  inputName.position(-1000, -100);
-  inputDate.position(-1000, 100);
-  login.position(-1000, 100);
-  back2.position(-1000, 1000);
-
-  let currentFrame = floor(stickyNoteFrame / 10);
-  image(frame[currentFrame], 0, 0, 800, 500);
-
-  if (stickyNoteFrame < 49 * 10) {
-    stickyNoteFrame++;
-    back.position(-1000, 1000);
-  } else {
-    back.position(360, 460);
-  }
 }
 
 function dearMe() {
@@ -370,9 +370,11 @@ function returnToVerfication() {
   redirect3 = false;
   redirect4 = false;
 
-  putBack() //put the hidden buttons back to verification
-  reset() // reset the already typed questions
+  putBack()
+  reset()
 }
+
+//put the hidden buttons back to verification
 function putBack() {
   inputName.position(width / 2 - 75, height / 2 - 50);
   inputDate.position(width / 2 - 75, height / 2 + 10);
@@ -382,6 +384,7 @@ function putBack() {
   invalid = false;
 }
 
+// reset the already typed questions
 function reset() {
   myText.type = 0;
   myText2.type = 0;
