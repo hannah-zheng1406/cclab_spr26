@@ -80,10 +80,10 @@ function preload() {
     frame2.push(loadImage("echoes/echoes-" + i + ".png"));
   }
 
-  typingSound = loadSound("sounds/typing.mp3")
+  typingSound = loadSound("sounds/typing.MP3")
   clickingSound = loadSound("sounds/clicking.mp3")
-  writingSound = loadSound("sounds/writing.mp3")
-  writingSound2 = loadSound("sounds/writing2.mp3")
+  writingSound = loadSound("sounds/writing.MP3")
+  writingSound2 = loadSound("sounds/writing2.MP3")
 }
 
 function setup() {
