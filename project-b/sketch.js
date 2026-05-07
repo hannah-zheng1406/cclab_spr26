@@ -330,7 +330,7 @@ function keyPressed() {
 
 function checkLogin() {
   clickingSound.play()
-  if (inputName.value() == "fromthepast.404" && inputDate.value() == "05/05/2026") {
+  if (inputName.value() == "fromthepast.404" && inputDate.value() == "05/07/2026") {
     redirect1 = true;
   } else {
     invalid = true;
